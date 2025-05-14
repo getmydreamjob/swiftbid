@@ -1,8 +1,10 @@
 // src/app/contractor/dashboard/page.tsx
+'use client';
+
 import { ContractorDashboardClient } from '@/components/contractor/ContractorDashboardClient';
 import { Briefcase, ListChecks } from 'lucide-react';
 import type { ActiveBidRequestSummary } from '@/lib/types';
-// Removed unused Button: import { Button } from '@/components/ui/button'; 
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 export const metadata = {
   title: 'Contractor Dashboard | SwiftBid',
@@ -20,6 +22,14 @@ const mockActiveBidRequests: ActiveBidRequestSummary[] = [
 
 
 export default function ContractorDashboardPage() {
+  const [user, loading] = useAuthState(auth);
+  const router = useRouter();
+
+  // Redirect unauthenticated users
+  if (!user && !loading) {
+    router.push('/auth/signin');
+    return null; // Render nothing while redirecting
+  }
   // In a real app, this data would be fetched server-side or client-side based on the authenticated contractor.
   const bidRequests = mockActiveBidRequests;
 
